@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/color/48/pokeball-2.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="calculadora.css">
+    <title>Calculadora</title>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h1 class="titulo">
+            <img class="pokeIcon" src="imagens/pokeball-icon.png" type="image/png">
+            Calculadora Pokémon - Derivadas e Integrais
+            <img class="pokeIcon" src="imagens/pokeball-icon.png" type="image/png">
+        </h1>
+    </div>
+
+    <div class="alternarModo">
+        <button class="toggle-dark" onclick="alternarModo()">
+            <img id="icone-tema" src="https://img.icons8.com/emoji/48/sun-emoji.png" alt="tema">
+        </button>
+        <button type="button" class="toggle-parametros" onclick="toggleParametros()">
+            Configurações Avançadas
+        </button>
+
+        <div class="parametros-calculo" id="parametrosSecao" style="display: none;" role="group"
+            aria-label="Parâmetros de Cálculo">
+            <h2 class="subtitulo-parametros">Intervalos e Divisões</h2>
+            <div class="grupo-input">
+                <label for="intervaloMin" style="font-size: small;">Pontos Críticos (Min):</label>
+                <input type="number" id="intervaloMin" value="-10">
+            </div>
+            <div class="grupo-input">
+                <label for="intervaloMax" style="font-size: small;">Pontos Críticos (Max):</label>
+                <input type="number" id="intervaloMax" value="10">
+            </div>
+            <div class="grupo-input">
+                <label for="integralInicio" style="font-size: small;">Integral (Início):</label>
+                <input type="number" id="integralInicio" value="0">
+            </div>
+            <div class="grupo-input">
+                <label for="integralFim" style="font-size: small;">Integral (Fim):</label>
+                <input type="number" id="integralFim" value="1">
+            </div>
+            <div class="grupo-input">
+                <label for="numDivisoes" style="font-size: small;">Num. Divisões (Integral):</label>
+                <input type="number" id="numDivisoes" value="100">
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="calculadora" role="toolbar" aria-label="calculadora">
+        <input type="text" id="funcao" placeholder="Digite a função (ex: x^2 + 3*x)">
+
+        <div class="botoes btn-group me-2" role="group" aria-label="Numerais">
+            <button type="button" class="btn " onclick="inserirInput(this)">9</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">8</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">7</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">+</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">-</button>
+            <button type="button" class="limpar " onclick="apagar()">⌫</button>
+
+            <button type="button" class="btn " onclick="inserirInput(this)">4</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">5</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">6</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">*</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">÷</button>
+            <button type="button" class="limpar " onclick="limpartexto()">C</button>
+
+            <button type="button" class="btn " onclick="inserirInput(this)">3</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">2</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">1</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">x</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">e</button>
+            <button type="button" class="igual" onclick="executarCalculo()">Calcular</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">(</button>
+
+            <button type="button" class="btn " onclick="inserirInput(this)">0</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">)</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">^</button>
+            <button type="button" class="btn " onclick="inserirInput(this)">=</button>
+        </div>
+
+        <div class="respostas" id="resultadoDisplay" aria-live="polite"></div>
+
+        <div class="calculadora" id="graficoFuncao" style="width: 100%; height: 400px;"></div>
+
+    </div>
+
+    <script>
+        function inserirInput(botao) {
+            const visor = document.getElementById('funcao');
+            visor.value += botao.innerText;
+        }
+
+        // Variáveis para o ciclo de resultados
+        let resultadosParaExibir = [];
+        let resultadoAtualIndex = 0;
+        let intervaloResultados = null; // Para armazenar o ID do setInterval
+
+        // Função para parar o ciclo de exibição
+        function pararCicloResultados() {
+            if (intervaloResultados) {
+                clearInterval(intervaloResultados);
+                intervaloResultados = null;
+                console.log("Ciclo de resultados parado.");
+            }
+        }
+
+        function limpartexto() {
+            document.getElementById('funcao').value = '';
+            document.getElementById('resultadoDisplay').innerHTML = ''; // Corrigido: limpa os <p>
+            pararCicloResultados(); // Para o ciclo de exibição
+            resultadosParaExibir = []; // Limpa o array
+            resultadoAtualIndex = 0;   // Reseta o índice
+        }
+
+
+        function apagar() {
+            const visor = document.getElementById('funcao');
+            visor.value = visor.value.slice(0, -1);
+          
+        }
+
+        function alternarModo() {
+            document.body.classList.toggle('dark-mode');
+            const icone = document.getElementById('icone-tema');
+
+            icone.classList.add('rotate');
+            setTimeout(() => icone.classList.remove('rotate'), 300);
+
+            icone.src = document.body.classList.contains('dark-mode') ?
+                'https://img.icons8.com/emoji/48/new-moon-emoji.png' :
+                'https://img.icons8.com/emoji/48/sun-emoji.png';
+        }
+
+        function toggleParametros() {
+            const parametrosDiv = document.getElementById('parametrosSecao');
+            const buttonText = document.querySelector('.toggle-parametros');
+            if (parametrosDiv.style.display === 'none' || parametrosDiv.style.display === '') {
+                parametrosDiv.style.display = 'block';
+                buttonText.innerText = 'Esconder Configurações';
+            } else {
+                parametrosDiv.style.display = 'none';
+                buttonText.innerText = 'Configurações Avançadas';
+            }
+        }
+
+        function exibirProximoResultado() {
+            const resultadoDisplay = document.getElementById('resultadoDisplay');
+
+            if (resultadosParaExibir.length === 0) {
+                const p = document.createElement('p');
+                p.textContent = 'Nenhum resultado para exibir.';
+                resultadoDisplay.appendChild(p);
+                pararCicloResultados();
+                return;
+            }
+
+            const novoResultado = document.createElement('p');
+            novoResultado.textContent = resultadosParaExibir[resultadoAtualIndex];
+            resultadoDisplay.appendChild(novoResultado); // Adiciona como novo parágrafo, com quebra automática
+
+            resultadoAtualIndex++;
+
+            if (resultadoAtualIndex >= resultadosParaExibir.length) {
+                pararCicloResultados();
+                resultadoAtualIndex = 0;
+            }
+        }
+
+
+       
+
+    </script>
+
+    <script type="module">
+
+        import { realizarCalculos } from "./calculadoraCore.js";
+        import { avaliarExpressao, pontoCritico, MaxeMin } from "./funcoes/ponto_critico.js";
+
+        function validarExpressaoMatematica(expressao) {
+            // Permite números, operadores, parênteses, x, e, E, ponto decimal e espaços
+            const regex = /^[0-9+\-*/^xXeE().% \t]+$/;
+            return regex.test(expressao);
+        }
+
+        function executarCalculo() {
+            // ... (suas validações de input existentes) ...
+            const funcaoOriginal = document.getElementById('funcao').value;
+            const intervaloMin = parseFloat(document.getElementById('intervaloMin').value);
+            const intervaloMax = parseFloat(document.getElementById('intervaloMax').value);
+            const integralInicio = parseFloat(document.getElementById('integralInicio').value);
+            const integralFim = parseFloat(document.getElementById('integralFim').value);
+            const numDivisoes = parseInt(document.getElementById('numDivisoes').value, 10);
+
+            if (!funcaoOriginal) {
+                alert("Por favor, digite uma função para calcular.");
+                return;
+            }
+            if (!validarExpressaoMatematica(funcaoOriginal)) {
+                alert("A função contém caracteres inválidos");
+                return;
+            }
+            if (isNaN(intervaloMin) || isNaN(intervaloMax) || isNaN(integralInicio) || isNaN(integralFim) || isNaN(numDivisoes)) {
+                alert("Por favor, preencha todos os parâmetros numéricos corretamente na seção de 'Configurações Avançadas'.");
+                const parametrosDiv = document.getElementById('parametrosSecao');
+                if (parametrosDiv.style.display === 'none' || parametrosDiv.style.display === '') {
+                    toggleParametros();
+                }
+                return;
+            }
+            if (numDivisoes <= 0) {
+                alert("O número de divisões deve ser um inteiro positivo.");
+                const parametrosDiv = document.getElementById('parametrosSecao');
+                if (parametrosDiv.style.display === 'none' || parametrosDiv.style.display === '') {
+                    toggleParametros();
+                }
+                return;
+            }
+            if (intervaloMin >= intervaloMax) {
+                alert("O intervalo mínimo para pontos críticos deve ser menor que o intervalo máximo.");
+                const parametrosDiv = document.getElementById('parametrosSecao');
+                if (parametrosDiv.style.display === 'none' || parametrosDiv.style.display === '') {
+                    toggleParametros();
+                }
+                return;
+            }
+            if (integralInicio >= integralFim) {
+                alert("O ponto inicial da integral deve ser menor que o ponto final.");
+                const parametrosDiv = document.getElementById('parametrosSecao');
+                if (parametrosDiv.style.display === 'none' || parametrosDiv.style.display === '') {
+                    toggleParametros();
+                }
+                return;
+            }
+
+            // Limpa o ciclo anterior se houver
+            pararCicloResultados(); // Use a nova função para parar
+            document.getElementById('resultadoDisplay').innerHTML = '';
+            resultadosParaExibir = []; // Limpa o array de resultados
+            resultadoAtualIndex = 0; // Reseta o índice
+
+            try {
+                const resultados = realizarCalculos(funcaoOriginal, intervaloMin, intervaloMax, integralInicio, integralFim, numDivisoes);
+
+                if (resultados.error) {
+                    throw new Error(resultados.error + (resultados.details ? ` (${resultados.details})` : ''));
+                }
+
+                // Função auxiliar para formatar resultados numéricos ou exibir "Erro"
+                const formatarNumero = (valor, casasDecimais) => {
+                    if (typeof valor === 'number' && !isNaN(valor)) {
+                        return valor.toFixed(casasDecimais);
+                    }
+                    return 'Divergente/Indefinido'; // Ou 'Erro de Cálculo', 'N/A'
+                };
+
+                // Preencher o array de resultados para exibição ciclagem
+                resultadosParaExibir.push(`Função: ${funcaoOriginal}`);
+                resultadosParaExibir.push(`1ª Derivada: ${resultados.primeiraDerivada || 'N/A'}`);
+                resultadosParaExibir.push(`2ª Derivada: ${resultados.segundaDerivada || 'N/A'}`);
+
+                const pontosCriticosFormatados = resultados.pontosCriticos.length > 0 ?
+                    resultados.pontosCriticos.map(p => formatarNumero(p, 4)).join(', ') : 'Nenhum';
+                resultadosParaExibir.push(`Pontos Críticos: ${pontosCriticosFormatados}`);
+
+                if (resultados.pontosCriticos.length > 0) {
+                    const pontosCriticosComY = [];
+                    resultados.pontosCriticos.forEach(xCrítico => {
+                        try {
+                            const yCrítico = avaliarExpressao(funcaoOriginal, xCrítico);
+
+                            if (!isNaN(yCrítico) && isFinite(yCrítico)) {
+                                pontosCriticosComY.push(`(${formatarNumero(xCrítico, 4)}, ${formatarNumero(yCrítico, 4)})`);
+                            } else {
+                                pontosCriticosComY.push(`(${formatarNumero(xCrítico, 4)}, Indefinido)`);
+                            }
+                        } catch (e) {
+                            console.warn(`Erro ao avaliar Y para ponto crítico X=${xCrítico} usando avaliarExpressao:`, e);
+                            pontosCriticosComY.push(`(${formatarNumero(xCrítico, 4)}, Erro)`);
+                        }
+                    });
+                    resultadosParaExibir.push(`Pontos (X,Y): ${pontosCriticosComY.join('; ')}`);
+                } else {
+                    resultadosParaExibir.push(`Pontos (X,Y): Nenhum`);
+                }
+
+                if (resultados.classificacaoPontos.maximos.length > 0) {
+                    const maximosFormatados = resultados.classificacaoPontos.maximos.map(p => formatarNumero(p, 4)).join(', ');
+                    resultadosParaExibir.push(`Máximos Locais: ${maximosFormatados}`);
+                } else {
+                    resultadosParaExibir.push(`Máximos Locais: Nenhum`);
+                }
+
+                if (resultados.classificacaoPontos.minimos.length > 0) {
+                    const minimosFormatados = resultados.classificacaoPontos.minimos.map(p => formatarNumero(p, 4)).join(', ');
+                    resultadosParaExibir.push(`Mínimos Locais: ${minimosFormatados}`);
+                } else {
+                    resultadosParaExibir.push(`Mínimos Locais: Nenhum`);
+                }
+
+                if (resultados.classificacaoPontos.inflexao.length > 0) {
+                    const inflexaoFormatada = resultados.classificacaoPontos.inflexao.map(p => formatarNumero(p, 4)).join(', ');
+                    resultadosParaExibir.push(`Inflexão: ${inflexaoFormatada}`);
+                } else {
+                    resultadosParaExibir.push(`Inflexão: Nenhum`);
+                }
+
+                resultadosParaExibir.push(`Integral (Trapézio): ${formatarNumero(resultados.integralTrapezio, 6)}`);
+                resultadosParaExibir.push(`Integral (Simpson): ${formatarNumero(resultados.integralSimpson, 6)}`);
+                resultadosParaExibir.push(`Integral (Riemann Esquerda): ${formatarNumero(resultados.integralRiemannEsquerda, 6)}`);
+                resultadosParaExibir.push(`Integral (Riemann Meio): ${formatarNumero(resultados.integralRiemannMeio, 6)}`);
+                resultadosParaExibir.push(`Integral (Riemann Direita): ${formatarNumero(resultados.integralRiemannDireita, 6)}`);
+
+                // Iniciar o ciclo de exibição
+                exibirProximoResultado(); // Exibe o primeiro resultado imediatamente
+                // Inicia o intervalo, mas ele será parado ao final da lista na função exibirProximoResultado
+                intervaloResultados = setInterval(exibirProximoResultado, 500);
+                google.charts.setOnLoadCallback(() => plotarGrafico(funcaoOriginal, intervaloMin, intervaloMax));
+
+            } catch (erro) {
+                console.error("Erro durante o cálculo:", erro);
+                resultadosParaExibir = [`Erro: ${erro.message}`];
+                exibirProximoResultado(); // Exibe a mensagem de erro
+                pararCicloResultados(); // Garante que o ciclo pare se houver um erro
+                alert(`Ocorreu um erro ao calcular a função: ${erro.message}. Por favor, verifique a sintaxe da função ou os parâmetros.`);
+            }
+        }
+
+            google.charts.load('current', { 'packages': ['corechart'] });
+
+        function plotarGrafico(funcao, xMin, xMax) {
+            // Gera pontos (x, y) da função
+            const pontos = [];
+
+
+
+            for (let x = xMin; x <= xMax; x += (xMax - xMin) /200) {
+                try {
+                    
+                    const y = avaliarExpressao(funcao, x); // Chamando sua função!
+
+                    if (!isNaN(y) && isFinite(y)) {
+                        pontos.push([x, y]);
+                    }
+                } catch (err) {
+                    console.warn("Erro ao calcular ponto no gráfico usando avaliarExpressao:", err);
+                    // Pode ser útil mostrar um erro na interface se a função for inválida
+                }
+            }
+
+            const data = new google.visualization.DataTable();
+            data.addColumn('number', 'x');
+            data.addColumn('number', 'f(x)');
+            data.addRows(pontos);
+
+            const options = {
+                title: `Gráfico de f(x) = ${funcao}`,
+                legend: 'none',
+                hAxis: { title: 'x' },
+                vAxis: { title: 'f(x)' },
+                curveType: 'function',
+                pointSize: 2
+            };
+
+            const chart = new google.visualization.LineChart(document.getElementById('graficoFuncao'));
+            chart.draw(data, options);
+        }
+        // Expor as funções ao escopo global (window)
+        window.inserirInput = inserirInput;
+        window.limpartexto = limpartexto;
+        window.apagar = apagar;
+        window.alternarModo = alternarModo;
+        window.executarCalculo = executarCalculo;
+        window.toggleParametros = toggleParametros;
+
+    </script>
+
+</body>
+
+</html>

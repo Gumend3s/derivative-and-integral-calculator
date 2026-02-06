@@ -1,0 +1,299 @@
+* {
+  box-sizing: border-box;
+}
+
+
+:root {
+  --cor-fundo-claro: #f5e6c9;
+  --cor-fundo-escuro: #1c1c1c;
+  --cor-visor-claro: #fdf6e3;
+  --cor-visor-escuro: #2e2e2e;
+  --cor-texto-claro: #000;
+  --cor-texto-escuro: #fff;
+}
+
+.press-start-2p-regular {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-image: url('imagens/background_teste.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  padding-top: 100px;
+  margin-top: 100px;
+}
+
+body.dark-mode {
+  background-image: url('imagens/background_darkmode.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center, fixed;
+  padding-top: 100px;
+  margin-top: 100px;
+  color: var(--cor-texto-escuro);
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+.pokeIcon {
+  width: 30px;
+}
+
+.titulo {
+  margin: 0;
+  border-radius: 5px;
+  font-family: 'Press Start 2P', cursive;
+  color: white;
+  box-shadow: black, 10px;
+}
+
+.alternarModo {
+  position: fixed;
+  top: 80px;
+  right: 80px;
+  z-index: 1001;
+  background-color: transparent;
+}
+
+.toggle-dark {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-dark:hover {
+  background-color: #2e2e2e6e;
+
+}
+
+.toggle-dark img {
+  width: 40px;
+  transition: transform 0.3s;
+}
+
+.toggle-dark img {
+  width: 40px;
+  transition: transform 0.3s;
+}
+
+.toggle-dark img.rotate {
+  transform: rotate(360deg);
+}
+
+.calculadora {
+  background-color: #df2f2f;
+  border: 5px solid #3b1c1c;
+  border-radius: 20px;
+  padding: 30px;
+  width: 600px;
+  height: max-content;
+  box-shadow: 0 0 20px #000;
+  margin-bottom: 20px;
+}
+
+#resultadoDisplay p {
+  margin-bottom: 12px;
+}
+
+#resultadoDisplay.respostas {
+  display: flow-root;
+}
+
+input,
+button,
+output {
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid;
+  border-width: 2px;
+  border-color: black;
+  position: block;
+}
+
+input,
+output {
+  background-color: var(--cor-visor-claro);
+  color: var(--cor-texto-claro);
+  font-size: 20px;
+  padding: 12px;
+  width: 100%;
+  text-align: right;
+  border: 2px solid #3b1c1c;
+  margin-bottom: 15px;
+  font-family: monospace;
+  border-radius: 6px;
+}
+
+body.dark-mode input {
+  background-color: var(--cor-visor-escuro);
+  color: var(--cor-texto-escuro);
+}
+
+button {
+  padding: 15px;
+  background-color: #ecca8b;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botoes {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+
+
+button:hover {
+  background-color: #a13434;
+  color: rgb(250, 233, 233);
+  border-color: black;
+  transform: scale(1.03);
+}
+
+
+.limpar {
+  background-color: #8e24aa;
+  color: white;
+}
+
+.igual {
+  background-color: #43a047;
+  color: white;
+}
+
+.resultados {
+  margin-top: 10px;
+}
+
+#resultado {
+  width: 100%;
+  padding: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #222;
+  background-color: #f5f5f5;
+  border: 2px solid #888;
+  border-radius: 5px;
+  box-shadow: inset 2px 2px 4px #ccc;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  min-height: 50px;
+}
+
+
+/* Ajustes no body (mantido do último feedback) */
+
+body.dark-mode {
+  background-image: url('imagens/background_darkmode.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center, fixed;
+  color: var(--cor-texto-escuro);
+}
+
+.alternarModo {
+  position: fixed;
+  top: 80px;
+  right: 80px;
+  z-index: 1001;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Estilo para o campo de saída de resultados ciclados */
+#resultadoDisplay {
+  background-color: var(--cor-visor-claro);
+  color: var(--cor-texto-claro);
+  font-size: 16px;
+  padding: 12px;
+  width: 100%;
+  text-align: left;
+  border: 2px solid #3b1c1c;
+  margin-top: 15px;
+  font-family: 'Press Start 2P', monospace;
+  border-radius: 6px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+
+}
+
+body.dark-mode #resultadoDisplay {
+  background-color: var(--cor-visor-escuro);
+  color: var(--cor-texto-escuro);
+}
+
+/* Calculadora (mantida a largura) */
+
+/* Parâmetros (mantida a largura) */
+.parametros-calculo {
+  background-color: #df2f2f;
+  border: 5px solid #3b1c1c;
+  border-radius: 20px;
+  padding: 25px 30px;
+  width: 300px;
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.6);
+  margin-top: 0;
+  color: white;
+  font-family: 'Press Start 2P', cursive;
+  text-align: left;
+  position: bottom;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Ajustes no button.toggle-parametros (já feito) */
+.toggle-parametros {
+  background-color: #f3d75c;
+  color: #3b1c1c;
+  padding: 10px 18px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8em;
+  border: 3px solid #3b1c1c;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 0 #b39a3f;
+  transition: all 0.1s ease;
+}
+
+.toggle-parametros:hover {
+  background-color: #e6c547;
+  color: #1c1c1c;
+  box-shadow: 0 3px 0 0 #b39a3f;
+  transform: translateY(1px);
+}
+
+.toggle-parametros:active {
+  background-color: #d8b23c;
+  box-shadow: 0 0 0 0 #b39a3f;
+  transform: translateY(3px);
+}

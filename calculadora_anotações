@@ -1,0 +1,22 @@
+Trabalho de Calculadora 
+Fazer uma calculadora para calcular Integral Numerica, que calcule os pontos críticos, pontos de máxima e de mínima.
+Fazer a exibição em gráfico.
+
+parte 1
+Calcular derivada 1: encontrar pontos críticos 
+Calcular derivada 2: encontrar pontos mínimos e máximos
+
+parte 2
+Calcular integral numerica: formula de Newton Cotes
+Regras Trapézio e regra Simpson
+
+
+Materiais para pesquisa:
+Calculo: https://www.ufrgs.br/reamat/CalculoNumerico/index.html
+
+outros:
+math.js: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objecs/Math
+numeric.js: https://ccc-js.github.io/numeric2/documentation.html
+            https://scribbler.live/2023/06/14/Numerical-Analysis-Linear-Algebra-NumericJS.html
+
+            
