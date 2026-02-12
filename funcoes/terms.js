@@ -2,7 +2,7 @@
 /**
  * Collects all the data on a given term and organizes it on an object
  * @param {string} term The term that will be dissected
- * @returns {object}    Um objeto contendo todos os dados do term
+ * @returns {object}    An object containing all the data of the term
  */
 export function dissectTerm(term) {
     let coefSign = "+",  // Stores the sign of the term's coefficient
@@ -18,7 +18,7 @@ export function dissectTerm(term) {
         hasExpTerm: false,      // Stores if the exponent is another term instead of just a number
         exponent: "",           // Stores the value of the exponent of the term
         hasE: false,            // Stores if the term has Euler's E
-        hasProduct: false       // Stores if the term needs the product rule to be applied
+        isProduct: false        // Stores if the term is an aproduct and needs it's rule to be applied
     }
     if (term === '' || term === undefined) return { ...termVals } // returns a blank dissected term if the given term is incorect or empty
 
@@ -32,7 +32,7 @@ export function dissectTerm(term) {
 
         switch (currentChar) {
             case '*':
-                termVals.hasProduct = true // Upon finding an * updates hasProduct
+                termVals.isProduct = true // Upon finding an * updates isProduct
                 break;
             case 'x':
                 if (!termVals.hasExp){
@@ -102,45 +102,45 @@ export function dissectTerm(term) {
  * Receives an dissected term and assembles it in a string
  * @param {object} term                 A term in the form of a dissected term
  * @param {boolean} first               Defines if the term is the first in a expression
- * @param {boolean} parentheses         Defines if the term needs to be inside an parentheses
+ * @param {boolean} needsParentheses    Defines if the term needs to be inside an parentheses
  * @param {boolean} parenthesesExponent Defines if the expoent of the term needs to be inside an parentheses
  * @returns {string} The assembled term in the form of a string
  */
-export function assembleTerm(term, first = false, parentheses = false, parenthesesExponent = false) {
+export function assembleTerm(term, first = false, needsParentheses = false, parenthesesExponent = false) {
     let assembledTerm = "" // Starts assembledTerm empty
     
-    if (!((term.hasParentheses || term.hasX || term.hasE) && term.coefficient === 1)) // Verifica se o term tem x, 'e' ou parentheses juntamenente com um coefficient 1, caso tenha não o adiciona ao term montado
-        assembledTerm += `${Math.abs(term.coefficient)}` // Em todos os outros casos adiciona o módulo do coefficient no term montado
+    if (!((term.hasParentheses || term.hasX || term.hasE) && term.coefficient === 1)) // Verifies if the term has x, 'e' or parentheses alongside a coefficient of 1, if that's the case the coefficient doesen't get added to assembledTerm
+        assembledTerm += `${Math.abs(term.coefficient)}` // In all other cases adds the absolute value of the coefficient to assembledTerm
 
-    if (term.hasX) {       // Caso tenha x, o adiciona no term
+    if (term.hasX) {       // If the term has an x, adds it to the assembledTerm
         assembledTerm += "x"
-    } else if(term.hasE) { // Caso tenha e, o adiciona no term
+    } else if(term.hasE) { // If the term has an euler e, adds it to the assembledTerm
         assembledTerm += "e"
-    } else if (term.hasParentheses) { // Caso tenha um parentheses o adiciona no term 
+    } else if (term.hasParentheses) { // If the term has an parentheses, adds it to the assembledTerm 
         assembledTerm += term.parenthesesContent
     }
     
-    if (term.hasExp) { // Caso tenha uma potência, a adiciona no term 
+    if (term.hasExp) { // If the term has an exponent adds it to assembledTerm
         if (parenthesesExponent && (term.exponent[0] !== '(' || term.exponent[0] !== ')')) {
             assembledTerm += "^(" + term.exponent + ')'
         } else
             assembledTerm += '^' + term.exponent
     }
 
-    if (term.coefficient < 0) // Se o coefficient for negativo adiciona o sinal -
+    if (term.coefficient < 0) // If the coefficient is negative adds the - sign
         if (first)
-            assembledTerm = `-${assembledTerm}`  // Caso seja o first na expressão, o - ficará colado no term
+            assembledTerm = `-${assembledTerm}`   // If the term is the first on the function, the - will have no spacing
         else
-            assembledTerm = ` - ${assembledTerm}` // Senão, será dado o espaçamento deviduo
+            assembledTerm = ` - ${assembledTerm}` // It not, the - will have an space before and after it
 
-    if (!first && term.coefficient >= 0 && !term.hasProduct) // Adiciona o sinal de + quando o term é positivo, o omite quando é o first term na expressão ou quando há uma multiplicação
+    if (!first && term.coefficient >= 0 && !term.isProduct) // Adds the + sign when the term is positive and it itsn't the first on the function and it isn't a product
         assembledTerm = ` + ${assembledTerm}`
 
-    if (parentheses && term.coefficient < 0) // Adiciona o term dentro de parentheses quando o term deve estar dentro de um parentheses e o term é negativo 
+    if (needsParentheses && term.coefficient < 0) // Puts the assembledTerm inside a parentheses when needsParentheses is true and the term is negative
         assembledTerm = '(' + assembledTerm.replace(" - ", "-") + ')'
 
-    if (term.hasProduct) // Se o term contiver um *, adiciona " * " 
-        assembledTerm = ` * ${assembledTerm}`
+    if (term.isProduct) // If the term is a product, adds " * "
+        assembledTerm = ` * ${assembledTerm.replace(" - ", "-")}`
 
-    return assembledTerm.replace("  ", " ") // Retorna o term montado substituindo redundâncias de espaços duplos
+    return assembledTerm.replace("  ", " ") // Returns assembledTerm replacing any double spacing redundancies
 }
