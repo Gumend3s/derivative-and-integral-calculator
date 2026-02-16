@@ -1,4 +1,4 @@
-import { derivarTermo, calcularDerivada } from "./funcoes/derivadas.js";
+import { calcularDerivada } from "./funcoes/derivadas.js";
 import { avaliarExpressao, pontoCritico, MaxeMin } from "./funcoes/ponto_critico.js";
 import { regradoTrapezio, regradoSimpson, regradoRetangulo } from "./funcoes/integral.js";
 import promptSync from "prompt-sync"; // Importa a função prompt-sync como padrão

@@ -1,5 +1,5 @@
 import { calcularDerivada } from "./funcoes/derivadas.js";
-import { avaliarExpressao, pontoCritico, MaxeMin } from "./funcoes/ponto_critico.js";
+import { pontoCritico, MaxeMin } from "./funcoes/ponto_critico.js";
 import { regradoTrapezio, regradoSimpson, regradoRetangulo } from "./funcoes/integral.js";
 
 /**

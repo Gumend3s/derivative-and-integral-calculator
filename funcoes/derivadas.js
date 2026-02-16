@@ -3,8 +3,7 @@ import {
     montaTermo
 } from "./termos.js";
 
-import {
-    simplificaFuncao, 
+import { 
     separarFuncao
 } from "./funcoes.js";
 /**
